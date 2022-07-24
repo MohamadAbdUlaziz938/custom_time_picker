@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../constant.dart';
+import '../utils/constant.dart';
 import '../state/state_container.dart';
 
 /// Just a simple [Dialog] with common styling

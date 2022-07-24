@@ -3,8 +3,8 @@ import 'package:custom_time_selectable/state/time.dart';
 
 import 'package:flutter/material.dart';
 
-import 'constant.dart';
-import 'day_time_picker_android.dart';
+import 'utils/constant.dart';
+import 'widgets/android_builder/day_time_picker_android.dart';
 PageRouteBuilder showPicker({
   BuildContext? context,
   required TimeOfDay value,
@@ -33,6 +33,7 @@ PageRouteBuilder showPicker({
   MinuteInterval minuteInterval = MinuteInterval.ONE,
   bool disableMinute = false,
   bool disableHour = false,
+  bool disableMinuteIfMaxHourSelected=false,
   double minMinute = 0,
   double maxMinute = 59,
   ThemeData? themeData,
@@ -55,12 +56,21 @@ PageRouteBuilder showPicker({
 
   assert(!(disableHour == true && disableMinute == true),
   "Both \"disableMinute\" and \"disableHour\" cannot be true.");
+  assert(!(disableMinuteIfMaxHourSelected == true && disableMinute == true),
+  "Both \"disableMinute\" and \"disableMinuteIfMaxHourSelected\" cannot be true.");
   assert(!(disableMinute == true && focusMinutePicker == true),
   "Both \"disableMinute\" and \"focusMinutePicker\" cannot be true.");
   assert(maxMinute <= 59, "\"maxMinute\" must be less than or equal to 59");
   assert(minMinute >= 0, "\"minMinute\" must be greater than or equal to 0");
   assert(maxHour <= 23 && minHour >= 0,
   "\"minHour\" and \"maxHour\" should be between 0-23");
+
+  if (disableMinuteIfMaxHourSelected == true) {
+    if (maxHour == value.hour) {
+
+      disableMinute = true;
+    }
+  }
 
   final timeValue = Time.fromTimeOfDay(value);
 
@@ -89,6 +99,7 @@ PageRouteBuilder showPicker({
           initialTime: timeValue,
           isInlineWidget: false,
           onChange: onChange,
+          disableMinuteIfMaxHourSelected: disableMinuteIfMaxHourSelected,
           onChangeDateTime: onChangeDateTime,
           onCancel: onCancel,
           is24HrFormat: is24HrFormat,
@@ -157,6 +168,7 @@ Widget createInlinePicker({
   String minuteLabel = 'minutes',
   MinuteInterval minuteInterval = MinuteInterval.ONE,
   bool disableMinute = false,
+  bool disableMinuteIfMaxHourSelected=false,
   bool disableHour = false,
   double minMinute = 0,
   double maxMinute = 59,
@@ -207,6 +219,7 @@ Widget createInlinePicker({
     dialogInsetPadding: dialogInsetPadding,
     minuteInterval: minuteInterval,
     disableMinute: disableMinute,
+    disableMinuteIfMaxHourSelected:disableMinuteIfMaxHourSelected,
     disableHour: disableHour,
     maxHour: maxHour,
     maxMinute: maxMinute,

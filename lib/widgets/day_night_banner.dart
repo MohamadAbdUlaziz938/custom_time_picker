@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:custom_time_selectable/utils.dart';
+import 'package:custom_time_selectable/utils/utils.dart';
 import 'package:flutter/material.dart';
-import './sun_moon.dart';
-import 'constant.dart';
-import 'state/state_container.dart';
+import 'sun_moon.dart';
+import '../utils/constant.dart';
+import '../state/state_container.dart';
 
 class DayNightBanner extends StatelessWidget {
   const DayNightBanner({Key? key}) : super(key: key);

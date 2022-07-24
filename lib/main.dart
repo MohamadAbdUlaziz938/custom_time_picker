@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'constant.dart';
+import 'utils/constant.dart';
 import 'day_time_picker.dart';
 
 void main() => runApp(const MyApp());
@@ -36,6 +36,7 @@ class _HomeState extends State<Home> {
 
   void onTimeChanged(TimeOfDay newTime) {
     setState(() {
+      print("onTimeChanged");
       _time = newTime;
     });
   }
@@ -68,6 +69,10 @@ class _HomeState extends State<Home> {
                       showPicker(
                         context: context,
                         value: _time,
+                        minHour: 9,
+                        maxHour: 21,
+                        maxMinute: 55,
+                        disableMinuteIfMaxHourSelected: true,
                         onChange: onTimeChanged,
                         minuteInterval: MinuteInterval.FIVE,
                         // Optional onChange to receive value as DateTime
@@ -83,36 +88,6 @@ class _HomeState extends State<Home> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Divider(),
-                const SizedBox(height: 10),
-                Text(
-                  "Inline Picker Style",
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                // Render inline widget
-                createInlinePicker(
-                  elevation: 1,
-                  value: _time,
-                  onChange: onTimeChanged,
-                  minuteInterval: MinuteInterval.FIVE,
-                  iosStylePicker: iosStyle,
-                  minHour: 9,
-                  maxHour: 21,
-                  is24HrFormat: false,
-                ),
-                Text(
-                  "IOS Style",
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                Switch(
-                  value: iosStyle,
-                  onChanged: (newVal) {
-                    setState(() {
-                      iosStyle = newVal;
-                    });
-                  },
-                )
               ],
             ),
           ),

@@ -3,7 +3,7 @@
 import 'package:custom_time_selectable/state/time.dart';
 import 'package:flutter/material.dart';
 
-import '../constant.dart';
+import '../utils/constant.dart';
 
 /// Stateful [Widget] for [InheritedWidget]
 class TimeModelBinding extends StatefulWidget {
@@ -41,7 +41,8 @@ class TimeModelBinding extends StatefulWidget {
 
   final MinuteInterval? minuteInterval;
 
-  final bool? disableMinute;
+  bool? disableMinute;
+  bool? disableMinuteIfMaxHourSelected;
 
   final bool? disableHour;
 
@@ -100,6 +101,7 @@ class TimeModelBinding extends StatefulWidget {
     this.dialogInsetPadding,
     this.minuteInterval,
     this.disableMinute,
+    this.disableMinuteIfMaxHourSelected,
     this.disableHour,
     this.maxHour,
     this.maxMinute,
@@ -125,7 +127,6 @@ class TimeModelBinding extends StatefulWidget {
     return scope.modelBindingState;
   }
 }
-
 
 class _ModelBindingScope extends InheritedWidget {
   final TimeModelBindingState modelBindingState;
@@ -178,6 +179,7 @@ class TimeModelBindingState extends State<TimeModelBinding> {
     } else {
       onMinuteChange(value);
     }
+    //widget.onChange(time.toTimeOfDay());
   }
 
   void onHourChange(double value) {

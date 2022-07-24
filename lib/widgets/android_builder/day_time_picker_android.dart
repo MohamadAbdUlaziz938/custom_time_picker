@@ -1,14 +1,14 @@
 import 'package:custom_time_selectable/state/state_container.dart';
-import 'package:custom_time_selectable/utils.dart';
+import 'package:custom_time_selectable/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-import 'am_pm.dart';
-import 'common/action_button.dart';
-import 'common/display_value.dart';
-import 'common/filter_wraper.dart';
-import 'common/wraper_container.dart';
-import 'common/wraper_dialog.dart';
-import 'day_night_banner.dart';
+import '../am_pm.dart';
+import '../../common/action_button.dart';
+import '../../common/display_value.dart';
+import '../../common/filter_wraper.dart';
+import '../../common/wraper_container.dart';
+import '../../common/wraper_dialog.dart';
+import '../day_night_banner.dart';
 
 class DayNightTimePickerAndroid extends StatefulWidget {
   const DayNightTimePickerAndroid({Key? key}) : super(key: key);
@@ -108,7 +108,20 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                         value: timeState.hourIsSelected
                             ? timeState.time.hour.roundToDouble()
                             : timeState.time.minute.roundToDouble(),
-                        onChanged: timeState.onTimeChange,
+                        onChanged: (value) {
+                          timeState.onTimeChange(value);
+                          if (timeState.widget.disableMinuteIfMaxHourSelected ==
+                              true) {
+                            if (timeState.hourIsSelected) {
+                              if (value == max) {
+                                timeState.widget.disableMinute = true;
+                                timeState.onMinuteChange(0);
+                              } else {
+                                timeState.widget.disableMinute = false;
+                              }
+                            }
+                          }
+                        },
                         min: min,
                         max: max,
                         divisions: divisions,
