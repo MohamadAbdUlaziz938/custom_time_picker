@@ -1,10 +1,10 @@
-import 'package:custom_time_selectable/state/state_container.dart';
-import 'package:custom_time_selectable/state/time.dart';
-
 import 'package:flutter/material.dart';
 
+import 'state/state_container.dart';
+import 'state/time.dart';
 import 'utils/constant.dart';
 import 'widgets/android_builder/day_time_picker_android.dart';
+
 PageRouteBuilder showPicker({
   BuildContext? context,
   required TimeOfDay value,
@@ -24,7 +24,7 @@ PageRouteBuilder showPicker({
   double? borderRadius,
   double? elevation,
   EdgeInsets? dialogInsetPadding =
-  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
   bool barrierDismissible = true,
   bool iosStylePicker = false,
   bool displayHeader = true,
@@ -33,7 +33,8 @@ PageRouteBuilder showPicker({
   MinuteInterval minuteInterval = MinuteInterval.ONE,
   bool disableMinute = false,
   bool disableHour = false,
-  bool disableMinuteIfMaxHourSelected=false,
+  bool disableMinuteIfMaxHourSelected = false,
+  double minMinuteAtCurrentHour = -1,
   double minMinute = 0,
   double maxMinute = 59,
   ThemeData? themeData,
@@ -55,28 +56,31 @@ PageRouteBuilder showPicker({
   }
 
   assert(!(disableHour == true && disableMinute == true),
-  "Both \"disableMinute\" and \"disableHour\" cannot be true.");
+      "Both \"disableMinute\" and \"disableHour\" cannot be true.");
   assert(!(disableMinuteIfMaxHourSelected == true && disableMinute == true),
-  "Both \"disableMinute\" and \"disableMinuteIfMaxHourSelected\" cannot be true.");
+      "Both \"disableMinute\" and \"disableMinuteIfMaxHourSelected\" cannot be true.");
   assert(!(disableMinute == true && focusMinutePicker == true),
-  "Both \"disableMinute\" and \"focusMinutePicker\" cannot be true.");
+      "Both \"disableMinute\" and \"focusMinutePicker\" cannot be true.");
   assert(maxMinute <= 59, "\"maxMinute\" must be less than or equal to 59");
   assert(minMinute >= 0, "\"minMinute\" must be greater than or equal to 0");
   assert(maxHour <= 23 && minHour >= 0,
-  "\"minHour\" and \"maxHour\" should be between 0-23");
-
+      "\"minHour\" and \"maxHour\" should be between 0-23");
+  assert(!(minMinute > 0 && minMinuteAtCurrentHour > 0),
+      "\"minMinute\" and \"minMinuteAtCurrentHour\" can't be selected together");
   if (disableMinuteIfMaxHourSelected == true) {
     if (maxHour == value.hour) {
-
       disableMinute = true;
     }
+  }
+  if (minMinuteAtCurrentHour > 0) {
+    minMinute = minMinuteAtCurrentHour;
   }
 
   final timeValue = Time.fromTimeOfDay(value);
 
   return PageRouteBuilder(
     pageBuilder: (context, _, __) {
-  {
+      {
         return Theme(
           data: themeData ?? Theme.of(context),
           child: const DayNightTimePickerAndroid(),
@@ -96,6 +100,7 @@ PageRouteBuilder showPicker({
       child: FadeTransition(
         opacity: anim,
         child: TimeModelBinding(
+          minMinuteAtCurrentHour: minMinuteAtCurrentHour,
           initialTime: timeValue,
           isInlineWidget: false,
           onChange: onChange,
@@ -140,7 +145,6 @@ PageRouteBuilder showPicker({
   );
 }
 
-
 Widget createInlinePicker({
   BuildContext? context,
   required TimeOfDay value,
@@ -161,14 +165,14 @@ Widget createInlinePicker({
   double? borderRadius,
   double? elevation,
   EdgeInsets? dialogInsetPadding =
-  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
   bool barrierDismissible = true,
   bool iosStylePicker = false,
   String hourLabel = 'hours',
   String minuteLabel = 'minutes',
   MinuteInterval minuteInterval = MinuteInterval.ONE,
   bool disableMinute = false,
-  bool disableMinuteIfMaxHourSelected=false,
+  bool disableMinuteIfMaxHourSelected = false,
   bool disableHour = false,
   double minMinute = 0,
   double maxMinute = 59,
@@ -177,6 +181,7 @@ Widget createInlinePicker({
   bool focusMinutePicker = false,
   // Infinity is used so that we can assert whether or not the user actually set a value
   double minHour = double.infinity,
+  double minMinuteAtCurrentHour = 0,
   double maxHour = double.infinity,
   TextStyle okStyle = const TextStyle(fontWeight: FontWeight.bold),
   TextStyle cancelStyle = const TextStyle(fontWeight: FontWeight.bold),
@@ -192,17 +197,24 @@ Widget createInlinePicker({
   }
 
   assert(!(disableHour == true && disableMinute == true),
-  "Both \"disableMinute\" and \"disableHour\" cannot be true.");
+      "Both \"disableMinute\" and \"disableHour\" cannot be true.");
   assert(!(disableMinute == true && focusMinutePicker == true),
-  "Both \"disableMinute\" and \"focusMinutePicker\" cannot be true.");
+      "Both \"disableMinute\" and \"focusMinutePicker\" cannot be true.");
   assert(maxMinute <= 59, "\"maxMinute\" must be less than or equal to 59");
   assert(minMinute >= 0, "\"minMinute\" must be greater than or equal to 0");
   assert(maxHour <= 23 && minHour >= 0,
-  "\"minHour\" and \"maxHour\" should be between 0-23");
-
+      "\"minHour\" and \"maxHour\" should be between 0-23");
+  assert(minMinute != 0 && minMinuteAtCurrentHour != 0,
+      "\"minMinute\" and \"minMinuteAtCurrentHour\" can't be selected together");
+  if (disableMinuteIfMaxHourSelected == true) {
+    if (maxHour == value.hour) {
+      disableMinute = true;
+    }
+  }
   final timeValue = Time.fromTimeOfDay(value);
 
   return TimeModelBinding(
+    minMinuteAtCurrentHour: minMinuteAtCurrentHour,
     onChange: onChange,
     onChangeDateTime: onChangeDateTime,
     onCancel: onCancel,
@@ -219,7 +231,7 @@ Widget createInlinePicker({
     dialogInsetPadding: dialogInsetPadding,
     minuteInterval: minuteInterval,
     disableMinute: disableMinute,
-    disableMinuteIfMaxHourSelected:disableMinuteIfMaxHourSelected,
+    disableMinuteIfMaxHourSelected: disableMinuteIfMaxHourSelected,
     disableHour: disableHour,
     maxHour: maxHour,
     maxMinute: maxMinute,
@@ -240,7 +252,7 @@ Widget createInlinePicker({
     initialTime: timeValue,
     child: Builder(
       builder: (context) {
-     {
+        {
           return Builder(
             builder: (context) {
               return Theme(

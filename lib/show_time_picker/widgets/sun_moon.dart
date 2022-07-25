@@ -1,6 +1,6 @@
-import 'package:custom_time_selectable/state/state_container.dart';
 import 'package:flutter/material.dart';
 
+import '../state/state_container.dart';
 import '../utils/constant.dart';
 
 
@@ -27,14 +27,14 @@ class SunMoon extends StatelessWidget {
                 child: timeState.widget.sunAsset ??
                     const Image(
                       image: AssetImage(
-                        "assets/sun.png",
+                        "assets/icons/time_picker/sun.png",
                       ),
                     ))
             : Container(
                 key: const ValueKey(2),
                 child: timeState.widget.moonAsset ??
                     const Image(
-                      image: AssetImage("assets/moon.png"),
+                      image: AssetImage("assets/icons/time_picker/moon.png"),
                     ),
               ),
         transitionBuilder: (child, anim) {

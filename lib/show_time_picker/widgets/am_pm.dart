@@ -1,5 +1,6 @@
-import 'package:custom_time_selectable/state/state_container.dart';
 import 'package:flutter/material.dart';
+
+import '../state/state_container.dart';
 
 class AmPm extends StatelessWidget {
   final _style = const TextStyle(fontSize: 20);

@@ -1,13 +1,13 @@
 // ignore_for_file: must_be_immutable, no_leading_underscores_for_local_identifiers
 
-import 'package:custom_time_selectable/state/time.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/constant.dart';
+import 'time.dart';
 
 /// Stateful [Widget] for [InheritedWidget]
 class TimeModelBinding extends StatefulWidget {
-  final Time initialTime;
+   Time initialTime;
 
   final void Function(TimeOfDay) onChange;
 
@@ -43,6 +43,7 @@ class TimeModelBinding extends StatefulWidget {
 
   bool? disableMinute;
   bool? disableMinuteIfMaxHourSelected;
+  double minMinuteAtCurrentHour;
 
   final bool? disableHour;
 
@@ -52,7 +53,7 @@ class TimeModelBinding extends StatefulWidget {
 
   final double? minHour;
 
-  final double? minMinute;
+   double? minMinute;
 
   final String? hourLabel;
 
@@ -107,6 +108,8 @@ class TimeModelBinding extends StatefulWidget {
     this.maxMinute,
     this.minHour,
     this.minMinute,
+
+    required this.minMinuteAtCurrentHour,
     this.hourLabel,
     this.minuteLabel,
     this.isInlineWidget = false,

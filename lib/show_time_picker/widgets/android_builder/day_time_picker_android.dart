@@ -1,7 +1,7 @@
-import 'package:custom_time_selectable/state/state_container.dart';
-import 'package:custom_time_selectable/utils/utils.dart';
 import 'package:flutter/material.dart';
 
+import '../../state/state_container.dart';
+import '../../utils/utils.dart';
 import '../am_pm.dart';
 import '../../common/action_button.dart';
 import '../../common/display_value.dart';
@@ -110,6 +110,15 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                             : timeState.time.minute.roundToDouble(),
                         onChanged: (value) {
                           timeState.onTimeChange(value);
+                          if (timeState.hourIsSelected&&timeState.widget.minMinuteAtCurrentHour>0) {
+                            if(timeState.widget.initialTime.hour==value){
+                             timeState. onMinuteChange(timeState.widget.minMinuteAtCurrentHour);
+                              timeState.widget.minMinute=timeState.widget.minMinuteAtCurrentHour;
+                            }
+                            else{
+                              timeState.widget.minMinute=0;
+                            }
+                          }
                           if (timeState.widget.disableMinuteIfMaxHourSelected ==
                               true) {
                             if (timeState.hourIsSelected) {

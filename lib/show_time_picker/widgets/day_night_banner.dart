@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:custom_time_selectable/utils/utils.dart';
 import 'package:flutter/material.dart';
+import '../utils/utils.dart';
 import 'sun_moon.dart';
 import '../utils/constant.dart';
 import '../state/state_container.dart';

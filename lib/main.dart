@@ -1,8 +1,8 @@
 
+import 'package:custom_time_selectable/show_time_picker/day_time_picker.dart';
+import 'package:custom_time_selectable/show_time_picker/utils/constant.dart';
 import 'package:flutter/material.dart';
 
-import 'utils/constant.dart';
-import 'day_time_picker.dart';
 
 void main() => runApp(const MyApp());
 
