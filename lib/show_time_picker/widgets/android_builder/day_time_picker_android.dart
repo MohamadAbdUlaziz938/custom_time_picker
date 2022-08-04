@@ -99,44 +99,51 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                           ],
                         ),
                       ),
-                      Slider(
-                        onChangeEnd: (value) {
-                          if (timeState.widget.isOnValueChangeMode) {
-                            timeState.onOk();
-                          }
-                        },
-                        value: timeState.hourIsSelected
-                            ? timeState.time.hour.roundToDouble()
-                            : timeState.time.minute.roundToDouble(),
-                        onChanged: (value) {
-                          timeState.onTimeChange(value);
-                          if (timeState.hourIsSelected&&timeState.widget.minMinuteAtCurrentHour>0) {
-                            if(timeState.widget.initialTime.hour==value){
-                             timeState. onMinuteChange(timeState.widget.minMinuteAtCurrentHour);
-                              timeState.widget.minMinute=timeState.widget.minMinuteAtCurrentHour;
-                            }
-                            else{
-                              timeState.widget.minMinute=0;
-                            }
-                          }
-                          if (timeState.widget.disableMinuteIfMaxHourSelected ==
-                              true) {
-                            if (timeState.hourIsSelected) {
-                              if (value == max) {
-                                timeState.widget.disableMinute = true;
-                                timeState.onMinuteChange(0);
-                              } else {
-                                timeState.widget.disableMinute = false;
-                              }
-                            }
-                          }
-                        },
-                        min: min,
-                        max: max,
-                        divisions: divisions,
-                        activeColor: color,
-                        inactiveColor: color.withAlpha(55),
-                      ),
+                      min != max
+                          ? Slider(
+                              onChangeEnd: (value) {
+                                if (timeState.widget.isOnValueChangeMode) {
+                                  timeState.onOk();
+                                }
+                              },
+                              value: timeState.hourIsSelected
+                                  ? timeState.time.hour.roundToDouble()
+                                  : timeState.time.minute.roundToDouble(),
+                              onChanged: (value) {
+                                timeState.onTimeChange(value);
+                                if (timeState.hourIsSelected &&
+                                    timeState.widget.minMinuteAtCurrentHour >
+                                        0) {
+                                  if (timeState.widget.initialTime.hour ==
+                                      value) {
+                                    timeState.onMinuteChange(timeState
+                                        .widget.minMinuteAtCurrentHour);
+                                    timeState.widget.minMinute =
+                                        timeState.widget.minMinuteAtCurrentHour;
+                                  } else {
+                                    timeState.widget.minMinute = 0;
+                                  }
+                                }
+                                if (timeState.widget
+                                        .disableMinuteIfMaxHourSelected ==
+                                    true) {
+                                  if (timeState.hourIsSelected) {
+                                    if (value == max) {
+                                      timeState.widget.disableMinute = true;
+                                      timeState.onMinuteChange(0);
+                                    } else {
+                                      timeState.widget.disableMinute = false;
+                                    }
+                                  }
+                                }
+                              },
+                              min: min,
+                              max: min == max ? max + 1 : max,
+                              divisions: divisions > 0 ? divisions : null,
+                              activeColor: color,
+                              inactiveColor: color.withAlpha(55),
+                            )
+                          : SizedBox(),
                       const ActionButtons(),
                     ],
                   ),
