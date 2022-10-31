@@ -1,8 +1,6 @@
-
 import 'package:custom_time_selectable/show_time_picker/day_time_picker.dart';
 import 'package:custom_time_selectable/show_time_picker/utils/constant.dart';
 import 'package:flutter/material.dart';
-
 
 void main() => runApp(const MyApp());
 
@@ -74,6 +72,7 @@ class _HomeState extends State<Home> {
                         maxMinute: 55,
                         disableMinuteIfMaxHourSelected: true,
                         onChange: onTimeChanged,
+                        currentTime: const TimeOfDay(hour: 10, minute: 30),
                         minuteInterval: MinuteInterval.FIVE,
                         // Optional onChange to receive value as DateTime
                         onChangeDateTime: (DateTime dateTime) {

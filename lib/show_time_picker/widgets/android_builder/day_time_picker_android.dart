@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import '../../state/state_container.dart';
@@ -111,34 +113,44 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                                   : timeState.time.minute.roundToDouble(),
                               onChanged: (value) {
                                 timeState.onTimeChange(value);
-                                if (timeState.hourIsSelected &&
-                                    timeState.widget.minMinuteAtCurrentHour >
-                                        0) {
-                                  if (timeState.widget.initialTime.hour ==
-                                      value) {
+
+                                // if (timeState.widget
+                                //         .disableMinuteIfMaxHourSelected ==
+                                //     true) {
+                                //   if (timeState.hourIsSelected) {
+                                //     if (value == max) {
+                                //       timeState.widget.disableMinute = true;
+                                //       timeState.onMinuteChange(0);
+                                //     } else {
+                                //       timeState.widget.disableMinute = false;
+                                //     }
+                                //   }
+                                // }
+
+                                if (timeState.hourIsSelected) {
+                                  /// selected hour equal to maximum hour check add allowed maximum minute to max minut
+                                  if (value == max) {
+                                    timeState.changeMinMinute(0);
+                                    timeState.onMinuteChange(0);
+                                    timeState.changeMaxMinute();
+                                  }
+
+                                  /// selected hour is current hour change min minute
+                                  else if (value == min) {
+                                    timeState.changeMinMinute(timeState
+                                        .widget.minMinuteAtCurrentHour);
                                     timeState.onMinuteChange(timeState
                                         .widget.minMinuteAtCurrentHour);
-                                    timeState.widget.minMinute =
-                                        timeState.widget.minMinuteAtCurrentHour;
+                                    timeState.changeMaxMinute();
                                   } else {
-                                    timeState.widget.minMinute = 0;
-                                  }
-                                }
-                                if (timeState.widget
-                                        .disableMinuteIfMaxHourSelected ==
-                                    true) {
-                                  if (timeState.hourIsSelected) {
-                                    if (value == max) {
-                                      timeState.widget.disableMinute = true;
-                                      timeState.onMinuteChange(0);
-                                    } else {
-                                      timeState.widget.disableMinute = false;
-                                    }
+                                    timeState.changeMinMinute(0);
+                                    timeState.onMinuteChange(0);
+                                    timeState.changeMaxMinute(maxMinute: 55);
                                   }
                                 }
                               },
                               min: min,
-                              max: min == max ? max + 1 : max,
+                              max: max,
                               divisions: divisions > 0 ? divisions : null,
                               activeColor: color,
                               inactiveColor: color.withAlpha(55),

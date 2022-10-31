@@ -7,7 +7,8 @@ import 'time.dart';
 
 /// Stateful [Widget] for [InheritedWidget]
 class TimeModelBinding extends StatefulWidget {
-   Time initialTime;
+  Time initialTime;
+  Time selectedTime;
 
   final void Function(TimeOfDay) onChange;
 
@@ -49,11 +50,11 @@ class TimeModelBinding extends StatefulWidget {
 
   final double? maxHour;
 
-  final double? maxMinute;
+  double? maxMinute;
 
   final double? minHour;
 
-   double? minMinute;
+  double? minMinute;
 
   final String? hourLabel;
 
@@ -76,6 +77,7 @@ class TimeModelBinding extends StatefulWidget {
   ButtonStyle? cancelButtonStyle;
 
   double? buttonsSpacing;
+  double maxMinuteAtMaximumHour = 0;
 
   final Widget child;
 
@@ -83,6 +85,7 @@ class TimeModelBinding extends StatefulWidget {
     Key? key,
     required this.initialTime,
     required this.child,
+    required this.selectedTime,
     required this.onChange,
     this.onChangeDateTime,
     this.onCancel,
@@ -108,7 +111,7 @@ class TimeModelBinding extends StatefulWidget {
     this.maxMinute,
     this.minHour,
     this.minMinute,
-
+    required this.maxMinuteAtMaximumHour,
     required this.minMinuteAtCurrentHour,
     this.hourLabel,
     this.minuteLabel,
@@ -145,7 +148,8 @@ class _ModelBindingScope extends InheritedWidget {
 }
 
 class TimeModelBindingState extends State<TimeModelBinding> {
-  late Time time = widget.initialTime;
+  late Time initTime = widget.initialTime;
+  late Time time = widget.selectedTime;
 
   bool hourIsSelected = true;
 
@@ -182,7 +186,6 @@ class TimeModelBindingState extends State<TimeModelBinding> {
     } else {
       onMinuteChange(value);
     }
-    //widget.onChange(time.toTimeOfDay());
   }
 
   void onHourChange(double value) {
@@ -194,6 +197,17 @@ class TimeModelBindingState extends State<TimeModelBinding> {
   void onMinuteChange(double value) {
     setState(() {
       time = time.replacing(minute: value.ceil());
+    });
+  }
+
+  void changeMinMinute(double minMinute) {
+    setState(() {
+      widget.minMinute = minMinute;
+    });
+  }
+  void changeMaxMinute({double? maxMinute}) {
+    setState(() {
+      widget.maxMinute = maxMinute??widget.maxMinuteAtMaximumHour;
     });
   }
 

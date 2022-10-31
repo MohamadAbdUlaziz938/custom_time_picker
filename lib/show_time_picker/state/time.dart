@@ -25,7 +25,10 @@ class Time extends TimeOfDay {
   /// Overide [TimeOfDay.replacing]
   @override
   Time replacing({int? hour, int? minute}) {
-    return Time.fromTimeOfDay(super.replacing(hour: hour, minute: minute));
+    final timeOfDay =
+        TimeOfDay(hour: hour ?? this.hour, minute: minute ?? this.minute);
+    //  return Time.fromTimeOfDay(super.replacing(hour: hour, minute: minute));
+    return Time.fromTimeOfDay(timeOfDay);
   }
 
   /// Helper for toggling period
