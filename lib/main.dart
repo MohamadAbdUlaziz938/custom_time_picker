@@ -68,12 +68,14 @@ class _HomeState extends State<Home> {
                         context: context,
                         value: _time,
                         minHour: 9,
-                        maxHour: 21,
+                        maxHour: 1,
                         maxMinute: 55,
-                        disableMinuteIfMaxHourSelected: true,
+                        minMinute: 0,
                         onChange: onTimeChanged,
-                        currentTime: const TimeOfDay(hour: 10, minute: 30),
+                        currentTime: TimeOfDay(hour: 9, minute: 0),
                         minuteInterval: MinuteInterval.FIVE,
+                        maxMinuteAtMaximumHour: 0,
+                        minMinuteAtCurrentHour: 30,
                         // Optional onChange to receive value as DateTime
                         onChangeDateTime: (DateTime dateTime) {
                           // print(dateTime);

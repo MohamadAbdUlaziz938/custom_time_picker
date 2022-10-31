@@ -150,6 +150,8 @@ class _ModelBindingScope extends InheritedWidget {
 class TimeModelBindingState extends State<TimeModelBinding> {
   late Time initTime = widget.initialTime;
   late Time time = widget.selectedTime;
+  late double hour = 0;
+  late double minute = 0;
 
   bool hourIsSelected = true;
 
@@ -205,9 +207,10 @@ class TimeModelBindingState extends State<TimeModelBinding> {
       widget.minMinute = minMinute;
     });
   }
+
   void changeMaxMinute({double? maxMinute}) {
     setState(() {
-      widget.maxMinute = maxMinute??widget.maxMinuteAtMaximumHour;
+      widget.maxMinute = maxMinute ?? widget.maxMinuteAtMaximumHour;
     });
   }
 
