@@ -30,24 +30,72 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
 
     double max =
         getMaxMinute(timeState.widget.maxMinute!, timeState.widget.minMinute!);
+    double minHour = 0;
 
+    //  timeState.minute = (max-(timeState.time.minute / 5)).toDouble();
     // int minDiff = (max - min).round();
     // int divisions =
     //     getMinuteDivisions(minDiff, timeState.widget.minuteInterval);
     int divisions = max.toInt();
-    final double minHour = timeState.initTime.hour.toDouble();
+
     if (timeState.hourIsSelected) {
+      print('============== hours =========');
+      minHour = timeState.initTime.hour.toDouble();
+      print('min hour');
+      print(minHour);
       min = 0;
+      int selectedHour = 0;
       if ((minHour) > (timeState.widget.maxHour ?? 0)) {
+        print('minimum section');
         final offHours = minHour - timeState.widget.maxHour!;
         final workHours = 24 - offHours;
         divisions = workHours.toInt();
         max = workHours;
       } else {
+        print('maximum section');
         final offHours = timeState.widget.maxHour! - minHour;
         divisions = offHours.toInt();
         max = offHours;
       }
+      selectedHour = timeState.time.hour;
+      if (timeState.time.hour == 0) {
+        selectedHour = 24;
+      }
+      timeState.hour = (selectedHour - minHour);
+      if (timeState.hour < 0) {
+        selectedHour = selectedHour - 1;
+        timeState.hour = (max - selectedHour);
+      }
+      print('=== division ===');
+      print(divisions);
+      print('=== time hour ===');
+      print(timeState.time.hour);
+      print('=== hour value ===');
+      print(timeState.hour);
+    } else {
+      if (timeState.hour == min) {
+        timeState.widget.minMinute = timeState.widget.minMinuteAtCurrentHour;
+        max = getMaxMinute(
+            timeState.widget.maxMinute!, timeState.widget.minMinute!);
+      } else if (timeState.widget.maxHour == timeState.time.hour) {
+        max = getMaxMinute(timeState.widget.maxMinuteAtMaximumHour,
+            timeState.widget.minMinute!);
+      }
+      divisions = max.toInt();
+
+      timeState.minute =
+          (timeState.time.minute - timeState.widget.minMinute!) / 5;
+      print('============== minutes =========');
+      print('min minutes');
+      print(timeState.widget.minMinute);
+      print('max minutes');
+      print(timeState.widget.maxMinute);
+      print('=== division ===');
+      print(divisions);
+      print('=== time minute ===');
+      print(timeState.time.minute);
+      print('=== minute value ===');
+      print(timeState.minute);
     }
 
     final color =
@@ -125,6 +173,7 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                                   ? timeState.hour
                                   : timeState.minute,
                               onChanged: (value) {
+                                value = value.round().toDouble();
                                 final int selectedValue = value.toInt();
                                 if (timeState.hourIsSelected) {
                                   timeState.hour = value;
@@ -140,9 +189,11 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                                   }
                                 } else {
                                   timeState.minute = value;
+
                                   value =
                                       (value * 5) + timeState.widget.minMinute!;
                                 }
+
                                 timeState.onTimeChange(value);
 
                                 if (timeState.hourIsSelected) {

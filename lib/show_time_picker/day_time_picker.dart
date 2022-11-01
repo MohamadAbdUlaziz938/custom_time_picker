@@ -78,7 +78,7 @@ PageRouteBuilder showPicker({
     maxMinute = maxMinuteAtMaximumHour;
   }
   if (minMinuteAtCurrentHour > 0 && value.hour == minHour) {
-    minMinute = minMinuteAtCurrentHour;
+   // minMinute = minMinuteAtCurrentHour;
   }
 
   final timeValue = Time.fromTimeOfDay(currentTime);

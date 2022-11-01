@@ -50,23 +50,23 @@ double getMinMinute(double? minMinute) {
 }
 
 /// Get the minimum minute from interval
-// double getMinMinute(double? minMinute, MinuteInterval? interval) {
-//   if (minMinute == 0) {
-//     return 0;
-//   }
-//   int step = getIntFromMinuteIntervalEnum(interval);
-//
-//   double min = -1;
-//   double i = 1;
-//   while (min < 0) {
-//     double val = i * step;
-//     if (val >= minMinute!) {
-//       min = val;
-//     }
-//     i++;
-//   }
-//   return min;
-// }
+double getMinMinuteStepper(double? minMinute, MinuteInterval? interval) {
+  if (minMinute == 0) {
+    return 0;
+  }
+  int step = getIntFromMinuteIntervalEnum(interval);
+
+  double min = -1;
+  double i = 1;
+  while (min < 0) {
+    double val = i * step;
+    if (val >= minMinute!) {
+      min = val;
+    }
+    i++;
+  }
+  return min;
+}
 
 /// Get the maximum minute from interval
 double getMaxMinute(double maxMinute, double minMinute) {

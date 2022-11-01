@@ -150,7 +150,7 @@ class _ModelBindingScope extends InheritedWidget {
 class TimeModelBindingState extends State<TimeModelBinding> {
   late Time initTime = widget.initialTime;
   late Time time = widget.selectedTime;
-  late double hour = 0;
+  late double hour = time.hour / 60;
   late double minute = 0;
 
   bool hourIsSelected = true;
@@ -203,6 +203,7 @@ class TimeModelBindingState extends State<TimeModelBinding> {
   }
 
   void changeMinMinute(double minMinute) {
+
     setState(() {
       widget.minMinute = minMinute;
     });
