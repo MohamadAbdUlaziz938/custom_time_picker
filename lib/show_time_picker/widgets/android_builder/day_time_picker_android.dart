@@ -29,7 +29,7 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
     double min = getMinMinute(timeState.widget.minMinute);
 
     double max =
-        getMaxMinute(timeState.widget.maxMinute!, timeState.widget.minMinute!);
+    getMaxMinute(timeState.widget.maxMinute!, timeState.widget.minMinute!);
     double minHour = 0;
 
     //  timeState.minute = (max-(timeState.time.minute / 5)).toDouble();
@@ -63,8 +63,7 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
       }
       timeState.hour = (selectedHour - minHour);
       if (timeState.hour < 0) {
-        selectedHour = selectedHour - 1;
-        timeState.hour = (max - selectedHour);
+        timeState.hour = 24 - minHour + timeState.time.hour;
       }
       print('=== division ===');
       print(divisions);
@@ -72,6 +71,8 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
       print(timeState.time.hour);
       print('=== hour value ===');
       print(timeState.hour);
+      print('==== max ===');
+      print(max);
     } else {
       if (timeState.hour == min) {
         timeState.widget.minMinute = timeState.widget.minMinuteAtCurrentHour;
@@ -106,7 +107,7 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
         : timeState.time.hourOfPeriod;
 
     final ltrMode =
-        timeState.widget.ltrMode ? TextDirection.ltr : TextDirection.rtl;
+    timeState.widget.ltrMode ? TextDirection.ltr : TextDirection.rtl;
 
     Orientation currentOrientation = MediaQuery.of(context).orientation;
 
@@ -137,8 +138,8 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                               onTap: timeState.widget.disableHour!
                                   ? null
                                   : () {
-                                      timeState.onHourIsSelectedChange(true);
-                                    },
+                                timeState.onHourIsSelectedChange(true);
+                              },
                               value: hourValue.toString().padLeft(2, '0'),
                               isSelected: timeState.hourIsSelected,
                             ),
@@ -149,11 +150,11 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                               onTap: timeState.widget.disableMinute!
                                   ? null
                                   : () {
-                                      if (max == min) {
-                                        timeState.changeMaxMinute();
-                                      }
-                                      timeState.onHourIsSelectedChange(false);
-                                    },
+                                if (max == min) {
+                                  timeState.changeMaxMinute();
+                                }
+                                timeState.onHourIsSelectedChange(false);
+                              },
                               value: timeState.time.minute
                                   .toString()
                                   .padLeft(2, '0'),
@@ -164,69 +165,73 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                       ),
                       min != max
                           ? Slider(
-                              onChangeEnd: (value) {
-                                if (timeState.widget.isOnValueChangeMode) {
-                                  timeState.onOk();
-                                }
-                              },
-                              value: timeState.hourIsSelected
-                                  ? timeState.hour
-                                  : timeState.minute,
-                              onChanged: (value) {
-                                value = value.round().toDouble();
-                                final int selectedValue = value.toInt();
-                                if (timeState.hourIsSelected) {
-                                  timeState.hour = value;
-                                  final calHour = (value * 60) + (minHour * 60);
-                                  if (calHour > 1440) {
-                                    value = (calHour - 1440) / 60;
-                                  } else {
-                                    if (calHour == 1440) {
-                                      value = 0;
-                                    } else {
-                                      value = calHour / 60;
-                                    }
-                                  }
-                                } else {
-                                  timeState.minute = value;
+                        onChangeEnd: (value) {
+                          if (timeState.widget.isOnValueChangeMode) {
+                            timeState.onOk();
+                          }
+                        },
+                        value: timeState.hourIsSelected
+                            ? timeState.hour
+                            : timeState.minute,
+                        onChanged: (value) {
+                          print('====value====');
+                          print(value);
+                          value = value.round().toDouble();
+                          print(value);
+                          final int selectedValue = value.toInt();
+                          if (timeState.hourIsSelected) {
+                            timeState.hour = value;
+                            final calHour = (value * 60) + (minHour * 60);
+                            if (calHour > 1440) {
+                              value = (calHour - 1440) / 60;
+                              print(value);
+                            } else {
+                              if (calHour == 1440) {
+                                value = 0;
+                              } else {
+                                value = calHour / 60;
+                              }
+                            }
+                          } else {
+                            timeState.minute = value;
+                            value =
+                                (value * 5) + timeState.widget.minMinute!;
+                          }
 
-                                  value =
-                                      (value * 5) + timeState.widget.minMinute!;
-                                }
+                          timeState.onTimeChange(value);
 
-                                timeState.onTimeChange(value);
+                          if (timeState.hourIsSelected) {
+                            /// selected hour equal to maximum hour check add allowed maximum minute to max minut
+                            if (selectedValue == max) {
+                              print('selectedValue == max');
+                              timeState.changeMinMinute(0);
+                              timeState.onMinuteChange(0);
+                              timeState.minute = 0;
+                              timeState.changeMaxMinute();
+                            }
 
-                                if (timeState.hourIsSelected) {
-                                  /// selected hour equal to maximum hour check add allowed maximum minute to max minut
-                                  if (selectedValue == max) {
-                                    timeState.changeMinMinute(0);
-                                    timeState.onMinuteChange(0);
-                                    timeState.minute = 0;
-                                    timeState.changeMaxMinute();
-                                  }
-
-                                  /// selected hour is current hour change min minute
-                                  else if (selectedValue == min) {
-                                    timeState.changeMinMinute(timeState
-                                        .widget.minMinuteAtCurrentHour);
-                                    timeState.onMinuteChange(timeState
-                                        .widget.minMinuteAtCurrentHour);
-                                    timeState.minute = 0;
-                                    timeState.changeMaxMinute(maxMinute: 55);
-                                  } else {
-                                    timeState.changeMinMinute(0);
-                                    timeState.onMinuteChange(0);
-                                    timeState.minute = 0;
-                                    timeState.changeMaxMinute(maxMinute: 55);
-                                  }
-                                }
-                              },
-                              min: min,
-                              max: max,
-                              divisions: divisions > 0 ? divisions : null,
-                              activeColor: color,
-                              inactiveColor: color.withAlpha(55),
-                            )
+                            /// selected hour is current hour change min minute
+                            else if (selectedValue == min) {
+                              timeState.changeMinMinute(timeState
+                                  .widget.minMinuteAtCurrentHour);
+                              timeState.onMinuteChange(timeState
+                                  .widget.minMinuteAtCurrentHour);
+                              timeState.minute = 0;
+                              timeState.changeMaxMinute(maxMinute: 55);
+                            } else {
+                              timeState.changeMinMinute(0);
+                              timeState.onMinuteChange(0);
+                              timeState.minute = 0;
+                              timeState.changeMaxMinute(maxMinute: 55);
+                            }
+                          }
+                        },
+                        min: min,
+                        max: max,
+                        divisions: divisions > 0 ? divisions : null,
+                        activeColor: color,
+                        inactiveColor: color.withAlpha(55),
+                      )
                           : const SizedBox(),
                       const ActionButtons(),
                     ],
