@@ -1,10 +1,12 @@
 # custom_time_selectable
 
-A new Flutter application.
+A new Flutter example using interval time selector package.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is an example of the package built in [this repo](https://github.com/MohamadAbdUlaziz938/interval-time-selector)
+
+
 
 A few resources to get you started if this is your first Flutter project:
 
