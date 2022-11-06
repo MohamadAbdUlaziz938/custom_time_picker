@@ -74,6 +74,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  interval_time_selector:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "983ca1f9fa4b8493dd7c3fee5e51b25a655f8be1"
+      url: "https://github.com/MohamadAbdUlaziz938/interval-time-selector"
+    source: git
+    version: "0.0.1"
   lints:
     dependency: transitive
     description:
@@ -164,4 +173,5 @@ packages:
     source: hosted
     version: "2.1.2"
 sdks:
-  dart: ">=2.17.3 <3.0.0"
+  dart: ">=2.17.5 <3.0.0"
+  flutter: ">=1.17.0"
