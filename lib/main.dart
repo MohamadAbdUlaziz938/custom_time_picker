@@ -65,6 +65,7 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     Navigator.of(context).push(
                       showPicker(
+                        workingHours: [0, 1, 9, 12, 11, 12, 13, 15, 19, 23],
                         context: context,
                         value: _time,
                         minHour: 9,
@@ -72,13 +73,11 @@ class _HomeState extends State<Home> {
                         maxMinute: 55,
                         minMinute: 0,
                         onChange: onTimeChanged,
-                        currentTime: TimeOfDay(hour: 9, minute: 0),
                         minuteInterval: MinuteInterval.FIVE,
                         maxMinuteAtMaximumHour: 0,
                         minMinuteAtCurrentHour: 30,
                         // Optional onChange to receive value as DateTime
                         onChangeDateTime: (DateTime dateTime) {
-                          // print(dateTime);
                           debugPrint("[debug datetime]:  $dateTime");
                         },
                       ),

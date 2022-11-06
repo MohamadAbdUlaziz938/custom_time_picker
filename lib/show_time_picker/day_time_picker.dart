@@ -8,7 +8,7 @@ import 'widgets/android_builder/day_time_picker_android.dart';
 PageRouteBuilder showPicker({
   BuildContext? context,
   required TimeOfDay value,
-  required TimeOfDay currentTime,
+  required List<int> workingHours,
   required void Function(TimeOfDay) onChange,
   void Function(DateTime)? onChangeDateTime,
   void Function()? onCancel,
@@ -34,10 +34,10 @@ PageRouteBuilder showPicker({
   MinuteInterval minuteInterval = MinuteInterval.ONE,
   bool disableMinute = false,
   bool disableHour = false,
-  bool disableMinuteIfMaxHourSelected = false,
   double minMinuteAtCurrentHour = -1,
   double minMinute = 0,
   double maxMinute = 59,
+  bool ascending = true,
   double maxMinuteAtMaximumHour = 0,
   ThemeData? themeData,
   bool focusMinutePicker = false,
@@ -56,11 +56,10 @@ PageRouteBuilder showPicker({
   if (maxHour == double.infinity) {
     maxHour = 23;
   }
-
+  assert((workingHours.isNotEmpty), "Working must be not empty");
   assert(!(disableHour == true && disableMinute == true),
       "Both \"disableMinute\" and \"disableHour\" cannot be true.");
-  assert(!(disableMinuteIfMaxHourSelected == true && disableMinute == true),
-      "Both \"disableMinute\" and \"disableMinuteIfMaxHourSelected\" cannot be true.");
+
   assert(!(disableMinute == true && focusMinutePicker == true),
       "Both \"disableMinute\" and \"focusMinutePicker\" cannot be true.");
   assert(maxMinute <= 59, "\"maxMinute\" must be less than or equal to 59");
@@ -69,19 +68,14 @@ PageRouteBuilder showPicker({
       "\"minHour\" and \"maxHour\" should be between 0-24 ");
   assert(!(minMinute > 0 && minMinuteAtCurrentHour > 0),
       "\"minMinute\" and \"minMinuteAtCurrentHour\" can't be selected together");
-  if (disableMinuteIfMaxHourSelected == true) {
-    if (maxHour == value.hour) {
-      disableMinute = true;
-    }
-  }
+
   if (maxMinuteAtMaximumHour > 0 && value.hour == maxHour) {
-    maxMinute = maxMinuteAtMaximumHour;
+    // maxMinute = maxMinuteAtMaximumHour;
   }
   if (minMinuteAtCurrentHour > 0 && value.hour == minHour) {
-   // minMinute = minMinuteAtCurrentHour;
+    // minMinute = minMinuteAtCurrentHour;
   }
 
-  final timeValue = Time.fromTimeOfDay(currentTime);
   final selectedTimeValue = Time.fromTimeOfDay(value);
 
   return PageRouteBuilder(
@@ -106,13 +100,17 @@ PageRouteBuilder showPicker({
       child: FadeTransition(
         opacity: anim,
         child: TimeModelBinding(
+          workingHours: ascending
+              ? (workingHours..sort())
+              : (workingHours
+                ..sort(
+                  (a, b) => b.compareTo(a),
+                )),
           maxMinuteAtMaximumHour: maxMinuteAtMaximumHour,
           minMinuteAtCurrentHour: minMinuteAtCurrentHour,
-          initialTime: timeValue,
           selectedTime: selectedTimeValue,
           isInlineWidget: false,
           onChange: onChange,
-          disableMinuteIfMaxHourSelected: disableMinuteIfMaxHourSelected,
           onChangeDateTime: onChangeDateTime,
           onCancel: onCancel,
           is24HrFormat: is24HrFormat,
@@ -180,17 +178,18 @@ Widget createInlinePicker({
   String minuteLabel = 'minutes',
   MinuteInterval minuteInterval = MinuteInterval.ONE,
   bool disableMinute = false,
-  bool disableMinuteIfMaxHourSelected = false,
   bool disableHour = false,
   double minMinute = 0,
   double maxMinute = 59,
   bool displayHeader = true,
   ThemeData? themeData,
   bool focusMinutePicker = false,
+  bool ascending = true,
   // Infinity is used so that we can assert whether or not the user actually set a value
   double minHour = double.infinity,
   double minMinuteAtCurrentHour = 0,
   double maxHour = double.infinity,
+  required List<int> workingHours,
   TextStyle okStyle = const TextStyle(fontWeight: FontWeight.bold),
   TextStyle cancelStyle = const TextStyle(fontWeight: FontWeight.bold),
   ButtonStyle? buttonStyle,
@@ -215,15 +214,16 @@ Widget createInlinePicker({
       "\"minHour\" and \"maxHour\" should be between 0-23");
   assert(minMinute != 0 && minMinuteAtCurrentHour != 0,
       "\"minMinute\" and \"minMinuteAtCurrentHour\" can't be selected together");
-  if (disableMinuteIfMaxHourSelected == true) {
-    if (maxHour == value.hour) {
-      disableMinute = true;
-    }
-  }
-  final timeValue = Time.fromTimeOfDay(value);
+
   final selectedTimeValue = Time.fromTimeOfDay(value);
 
   return TimeModelBinding(
+    workingHours: ascending
+        ? (workingHours..sort())
+        : (workingHours
+          ..sort(
+            (a, b) => b.compareTo(a),
+          )),
     maxMinuteAtMaximumHour: maxMinuteAtMaximumHour,
     minMinuteAtCurrentHour: minMinuteAtCurrentHour,
     onChange: onChange,
@@ -243,7 +243,6 @@ Widget createInlinePicker({
     dialogInsetPadding: dialogInsetPadding,
     minuteInterval: minuteInterval,
     disableMinute: disableMinute,
-    disableMinuteIfMaxHourSelected: disableMinuteIfMaxHourSelected,
     disableHour: disableHour,
     maxHour: maxHour,
     maxMinute: maxMinute,
@@ -261,7 +260,6 @@ Widget createInlinePicker({
     cancelButtonStyle: cancelButtonStyle,
     buttonsSpacing: buttonsSpacing,
     ltrMode: ltrMode,
-    initialTime: timeValue,
     child: Builder(
       builder: (context) {
         {
